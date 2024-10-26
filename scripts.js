@@ -485,27 +485,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Existing code...
 });
 
-// Add this function to your scripts.js file
-function updateLegend() {
-    const legendContent = document.getElementById('legend-content');
-    legendContent.innerHTML = `
-        <div class="legend-item">
-            <div class="legend-color" style="background-color: #00ff00;"></div>
-            <span>Clothes/Shoes Container</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background-color: #ff0000;"></div>
-            <span>Recycling Center</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background-color: #0000ff;"></div>
-            <span>Your Location</span>
-        </div>
-    `;
-}
-
-// You might also want to update the legend when the window is resized
-window.addEventListener('resize', updateLegend);
 
 // Add this new function
 function adjustLegendPosition() {
