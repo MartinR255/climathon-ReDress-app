@@ -7,9 +7,16 @@ let nearestContainers = [];
 function initMap() {
     // Start with Bratislava as the default center
     const bratislavaCoords = [48.1486, 17.1077];
-    map = L.map('map').setView(bratislavaCoords, window.innerWidth < 768 ? 11 : 12);
+    map = L.map('map', {
+        zoomControl: false  // Disable default zoom controls
+    }).setView(bratislavaCoords, window.innerWidth < 768 ? 11 : 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add zoom control to the bottom right corner
+    L.control.zoom({
+        position: 'bottomright'
     }).addTo(map);
 
     map.on('click', onMapClick);
@@ -205,7 +212,15 @@ function addDonationContainersToMap(containers) {
         const markerLatLng = container.center ? [container.center.lat, container.center.lon] : [container.lat, container.lon];
         L.marker(markerLatLng, {icon: icon})
             .addTo(map)
-            .bindPopup(popupContent);
+            .bindPopup(popupContent)
+            .on('click', function(e) {
+                // Prevent the map click event from firing when clicking markers
+                L.DomEvent.stopPropagation(e);
+                
+                // Expand navbar when marker is clicked
+                const navbar = document.getElementById('vertical-navbar');
+                navbar.classList.add('expanded');
+            });
     });
 }
 
@@ -231,21 +246,26 @@ function onMapClick(e) {
         updateMapView(e.latlng.lat, e.latlng.lng);
         toggleDropPinMode();
     }
+    // Remove the auto-collapse behavior when clicking on map
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.getElementById('vertical-navbar');
+    const navbarToggle = document.getElementById('navbar-toggle');
+    
+    // Add this line to automatically expand the navbar on load
+    navbar.classList.add('expanded');
+    
+    // Add click handler for toggle button
+    navbarToggle.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent click from reaching the map
+        navbar.classList.toggle('expanded');
+    });
+    
     initMap();
     
     document.getElementById('getLocation').addEventListener('click', getUserLocation);
-    
     document.getElementById('dropPin').addEventListener('click', toggleDropPinMode);
-
-    const navbarToggle = document.getElementById('navbar-toggle');
-    const navbarMenu = document.getElementById('navbar-menu');
-
-    navbarToggle.addEventListener('click', function() {
-        navbarMenu.classList.toggle('show');
-    });
 });
 
 // Add this new function to handle getting directions
@@ -297,6 +317,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 function displayNearestContainers() {
     const containerList = document.getElementById('nearest-containers');
+    if (!containerList) return;
+    
     containerList.innerHTML = '';
 
     nearestContainers.forEach(container => {
@@ -317,7 +339,7 @@ function displayNearestContainers() {
         }
 
         li.innerHTML = `
-            <div class="container-type">${containerType} ${isCenter ? '' : 'Donation Container'}</div>
+            <div class="container-type">${containerType} ${isCenter ? '' : 'Container'}</div>
             <div class="container-distance">${container.distance.toFixed(2)} km away</div>
             <button class="directions-btn" onclick="getDirections(${container.lat}, ${container.lon})">Get Directions</button>
         `;
@@ -335,3 +357,4 @@ function showOpeningHours(hours) {
 
 // Make sure this function is accessible globally
 window.showOpeningHours = showOpeningHours;
+

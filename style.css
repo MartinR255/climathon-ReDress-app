@@ -1,69 +1,145 @@
+/* Import Geist Sans font */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;700&display=swap');
+
+/* Set Geist Sans as the default font for the entire body */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    display: flex;
+    font-family: 'Geist Sans', sans-serif;
 }
 
-.navbar {
+/* Navbar styling */
+#vertical-navbar {
+    width: 40px;
+    height: 100vh;
     background-color: #333;
-    color: white;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding: 10px 20px;
-    position: relative;
-    z-index: 1001; /* Ensure navbar is above the map */
+    justify-content: flex-start;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto; /* Allow scrolling if content is too long */
 }
 
-.navbar-brand {
-    font-size: 1.5em;
+/* App name styling */
+.app-name {
+    color: white;
+    font-size: 18px;
     font-weight: bold;
+    white-space: nowrap;
+    margin-top: 20px;
+    text-align: center;
+    transition: margin-left 0.6s ease; /* Slowed to 0.6s */
 }
 
-.navbar-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5em;
-    cursor: pointer;
+/* Initials styling, visible by default */
+.initials {
+    display: inline-block;
+    transition: transform 0.6s ease, opacity 0.6s ease; /* Slowed to 0.6s */
 }
 
-.navbar-menu {
-    list-style-type: none;
+/* Expansion parts (hidden by default) */
+.expansion {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    display: inline-block;
+    transition: opacity 0.6s ease, width 0.6s ease, transform 0.6s ease; /* Slowed to 0.6s */
+    transform: translateX(-10px); /* Slight shift to the left initially */
+}
+
+
+/* Expanded navbar styling for full app name */
+#vertical-navbar.expanded .app-name {
     display: flex;
-    margin: 0;
-    padding: 0;
+    justify-content: center;
+    align-items: center;
 }
 
-.navbar-menu li {
-    margin-left: 20px;
+#vertical-navbar.expanded .expansion {
+    opacity: 1;
+    width: auto;
+    transform: translateX(0); /* Shift back into place smoothly */
 }
 
-.navbar-menu a {
-    color: white;
-    text-decoration: none;
-    padding: 5px 10px;
+#vertical-navbar.expanded .app-name .initials {
+    transform: translateX(0); /* Reset any transformations */
 }
 
-.navbar-menu a.active, .navbar-menu a:hover {
-    background-color: #555;
-    border-radius: 4px;
+/* Extra spacing adjustments for appearance */
+.app-name .e {
+    margin-left: -2px; /* Adjust as needed for natural appearance */
+}
+.app-name .ress {
+    margin-left: 1px;
 }
 
+/* Remove expand button styling */
+#expand-btn {
+    display: none; /* Or you can completely remove this block */
+}
+
+/* Update navbar styling - remove transition references to button */
+#vertical-navbar {
+    width: 40px;
+    height: 100vh;
+    background-color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    z-index: 1000;
+}
+
+/* Expanded navbar width */
+#vertical-navbar.expanded {
+    width: 250px;
+}
+
+/* Toggle button arrow visibility */
+#vertical-navbar.expanded #expand-btn .fa-angle-right {
+    display: none;
+}
+
+#vertical-navbar.expanded #expand-btn .fa-angle-left {
+    display: inline-block;
+}
+
+/* Map and button container styling */
 #map {
-    height: calc(100vh - 60px);
+    height: 100vh; /* Changed from calc(100vh - 60px) to 100vh */
     width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
 #button-container {
-    position: absolute;
-    bottom: 20px;
-    left: 10px;
-    z-index: 1000;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
     display: flex;
-    flex-direction: column;
     gap: 10px;
+}
+
+#button-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 #getLocation, #dropPin {
@@ -81,173 +157,102 @@ body {
     background-color: #f0f0f0;
 }
 
-.directions-btn {
-    display: block;
-    width: 100%;
-    padding: 8px 12px;
-    margin-top: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+/* Font weights for other elements */
+.some-element {
+    font-weight: 300; /* Light */
 }
 
-.directions-btn:hover {
-    background-color: #45a049;
+.another-element {
+    font-weight: 700; /* Bold */
 }
 
-.directions-btn:active {
-    background-color: #3e8e41;
-}
-
-/* Style the popup to ensure the button fits well */
-.leaflet-popup-content {
-    min-width: 200px;
-}
-
-/* Media Queries for Responsiveness */
-@media screen and (max-width: 768px) {
-    .navbar-toggle {
-        display: block;
-    }
-
-    .navbar-menu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: #333;
-        flex-direction: column;
-        padding: 10px 0;
-    }
-
-    .navbar-menu.show {
-        display: flex;
-    }
-
-    .navbar-menu li {
-        margin: 5px 0;
-    }
-
-    #map {
-        height: calc(100vh - 60px);
-    }
-
-    #button-container {
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        flex-direction: row;
-        justify-content: center;
-        width: 100%;
-        padding: 0 10px;
-        box-sizing: border-box;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .navbar-brand {
-        font-size: 1.2em;
-    }
-
-    #getLocation, #dropPin {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-
-    .directions-btn {
-        font-size: 12px;
-    }
-
-    .leaflet-popup-content {
-        min-width: 150px;
-    }
-}
-
-#sidebar {
-    position: absolute;
-    top: 60px;
-    right: 0;
-    width: 300px;
-    height: calc(100vh - 60px);
-    background-color: white;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    z-index: 1000;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-#sidebar h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
+/* Add these styles for the nearest containers in navbar */
 #nearest-containers {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
+    margin: 20px 0;
+    width: 100%;
+    color: white;
 }
 
 #nearest-containers li {
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
+    padding: 15px;
+    border-bottom: 1px solid #444;
 }
 
 #nearest-containers .container-type {
-    font-weight: bold;
+    font-size: 14px;
     margin-bottom: 5px;
 }
 
 #nearest-containers .container-distance {
-    font-size: 0.9em;
-    color: #666;
-}
-
-/* Adjust map width to accommodate sidebar */
-#map {
-    width: calc(100% - 300px);
-}
-
-/* Media query for responsive design */
-@media screen and (max-width: 768px) {
-    #sidebar {
-        width: 100%;
-        height: 200px;
-        top: auto;
-        bottom: 0;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    #map {
-        width: 100%;
-        height: calc(100vh - 260px);
-    }
-
-    #button-container {
-        bottom: 220px;
-    }
-}
-
-.info-btn {
-    display: inline-block;
-    padding: 5px 10px;
-    margin-top: 5px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 3px;
     font-size: 12px;
-    cursor: pointer;
+    color: #aaa;
+    margin-bottom: 8px;
 }
 
-.info-btn:hover {
-    background-color: #e0e0e0;
+#nearest-containers .directions-btn {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    width: 100%;
+}
+
+#nearest-containers .directions-btn:hover {
+    background: #555;
+}
+
+/* Add these styles for the toggle button */
+#navbar-toggle {
+    position: absolute;
+    right: -30px;
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Center vertically */
+    width: 30px;
+    height: 50px; /* Make button taller */
+    background: #333;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    transition: background 0.3s ease;
+}
+
+#navbar-toggle:hover {
+    background: #444;
+}
+
+/* Ensure smooth rotation of the arrow */
+#navbar-toggle i {
+    transition: transform 0.3s ease;
+}
+
+#vertical-navbar:not(.expanded) #navbar-toggle i {
+    transform: rotate(180deg);
+}
+
+#vertical-navbar.expanded #navbar-toggle i {
+    transform: rotate(0deg);
+}
+
+/* Adjust navbar z-index to ensure toggle button is visible */
+#vertical-navbar {
+    z-index: 1000;
+}
+
+/* Ensure smooth transitions */
+#vertical-navbar {
+    transition: width 0.3s ease;
+}
+
+#navbar-toggle i {
+    transition: transform 0.3s ease;
 }

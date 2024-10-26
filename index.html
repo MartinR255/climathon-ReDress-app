@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ReDress - Donation Container Locator</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <!-- Add these meta tags -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -12,19 +13,24 @@
     <meta http-equiv="Expires" content="0">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-brand">ReDress</div>
-        <ul class="navbar-menu">
-            <li><a href="#" class="active">Map</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
+    <nav id="vertical-navbar">
+        <div class="app-name">
+            <span class="initials">R</span><span class="expansion e">e</span>
+            <span class="initials">D</span><span class="expansion ress">ress</span>
+        </div>
+        <div class="expansion">
+            <h3 style="color: white; padding: 15px 15px 0 15px; margin: 0;">Nearest Locations</h3>
+            <ul id="nearest-containers"></ul>
+        </div>
+        <!-- Add this button -->
+        <button id="navbar-toggle">
+            <i class="fas fa-chevron-left"></i>
+        </button>
     </nav>
+    
+    
+    
     <div id="map"></div>
-    <div id="sidebar">
-        <h2>Nearest Containers</h2>
-        <ul id="nearest-containers"></ul>
-    </div>
     <div id="button-container">
         <button id="getLocation">Get My Location</button>
         <button id="dropPin">Drop Pin</button>
