@@ -128,10 +128,10 @@ function fetchDonationContainers(lat, lng) {
     (
       node["amenity"="recycling"]["recycling:clothes"="yes"](around:${radius},${lat},${lng});
       node["amenity"="recycling"]["recycling:shoes"="yes"](around:${radius},${lat},${lng});
+      way["amenity"="recycling"]["recycling:clothes"="yes"](around:${radius},${lat},${lng});
+      way["amenity"="recycling"]["recycling:shoes"="yes"](around:${radius},${lat},${lng});
     );
-    out body;
-    >;
-    out skel qt;
+    out center;
     `;
 
     fetch(overpassUrl, {
@@ -157,7 +157,7 @@ function addDonationContainersToMap(containers) {
     });
 
     const iconSize = window.innerWidth < 480 ? [20, 33] : [25, 41];
-    const clothesIcon = L.icon({
+    const containerIcon = L.icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
         iconSize: iconSize,
@@ -166,8 +166,8 @@ function addDonationContainersToMap(containers) {
         shadowSize: [41, 41]
     });
 
-    const shoesIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    const centerIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
         iconSize: iconSize,
         iconAnchor: [12, 41],
@@ -178,24 +178,32 @@ function addDonationContainersToMap(containers) {
     containers.forEach(container => {
         const isClothes = container.tags["recycling:clothes"] === "yes";
         const isShoes = container.tags["recycling:shoes"] === "yes";
+        const isCenter = container.tags["recycling_type"] === "centre";
+        const openingHours = container.tags["opening_hours"] || "Not available";
         let popupContent = "";
         let icon;
 
-        if (isClothes && isShoes) {
-            popupContent = "Clothes and Shoes Donation Container";
-            icon = clothesIcon;
-        } else if (isClothes) {
-            popupContent = "Clothes Donation Container";
-            icon = clothesIcon;
-        } else if (isShoes) {
-            popupContent = "Shoes Donation Container";
-            icon = shoesIcon;
+        if (isCenter) {
+            popupContent = "Recycling Center";
+            icon = centerIcon;
+            // Add info icon for opening hours only for recycling centers
+            popupContent += `<br><button class="info-btn" onclick="showOpeningHours('${openingHours}')">ℹ️ Opening Hours</button>`;
+        } else {
+            if (isClothes && isShoes) {
+                popupContent = "Clothes and Shoes Donation Container";
+            } else if (isClothes) {
+                popupContent = "Clothes Donation Container";
+            } else if (isShoes) {
+                popupContent = "Shoes Donation Container";
+            }
+            icon = containerIcon;
         }
 
         // Add "Get Directions" button to popup content
         popupContent += `<br><button class="directions-btn" onclick="getDirections(${container.lat}, ${container.lon})">Get Directions</button>`;
 
-        L.marker([container.lat, container.lon], {icon: icon})
+        const markerLatLng = container.center ? [container.center.lat, container.center.lon] : [container.lat, container.lon];
+        L.marker(markerLatLng, {icon: icon})
             .addTo(map)
             .bindPopup(popupContent);
     });
@@ -295,9 +303,12 @@ function displayNearestContainers() {
         const li = document.createElement('li');
         const isClothes = container.tags["recycling:clothes"] === "yes";
         const isShoes = container.tags["recycling:shoes"] === "yes";
+        const isCenter = container.tags["recycling_type"] === "centre";
         let containerType = "";
 
-        if (isClothes && isShoes) {
+        if (isCenter) {
+            containerType = "Recycling Center";
+        } else if (isClothes && isShoes) {
             containerType = "Clothes and Shoes";
         } else if (isClothes) {
             containerType = "Clothes";
@@ -306,10 +317,21 @@ function displayNearestContainers() {
         }
 
         li.innerHTML = `
-            <div class="container-type">${containerType} Donation Container</div>
+            <div class="container-type">${containerType} ${isCenter ? '' : 'Donation Container'}</div>
             <div class="container-distance">${container.distance.toFixed(2)} km away</div>
             <button class="directions-btn" onclick="getDirections(${container.lat}, ${container.lon})">Get Directions</button>
         `;
         containerList.appendChild(li);
     });
 }
+
+function showOpeningHours(hours) {
+    if (hours && hours !== "Not available") {
+        alert(`Opening Hours: ${hours}`);
+    } else {
+        alert("Opening hours information is not available for this location.");
+    }
+}
+
+// Make sure this function is accessible globally
+window.showOpeningHours = showOpeningHours;

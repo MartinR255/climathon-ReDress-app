@@ -236,3 +236,18 @@ body {
         bottom: 220px;
     }
 }
+
+.info-btn {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-top: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.info-btn:hover {
+    background-color: #e0e0e0;
+}
