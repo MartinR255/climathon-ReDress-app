@@ -37,33 +37,16 @@ function initMap() {
 
 function getUserLocation() {
     if ("geolocation" in navigator) {
-        // Clear any existing watch
-        if (window.geolocationWatchId) {
-            navigator.geolocation.clearWatch(window.geolocationWatchId);
-        }
-
-        // Force clear cache by requesting high accuracy position
-        const options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-        };
-
         navigator.geolocation.getCurrentPosition(
-            // Success callback
             function(position) {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
-                
-                console.log("Fresh geolocation:", lat, lng);
-                updateMapView(lat, lng);
+                updateMapView(lat, lng); // Update the map view with the user's location
             },
-            // Error callback
             function(error) {
                 console.error("Geolocation error:", error);
-                handleLocationError(error);
-            },
-            options
+                handleLocationError(error); // Handle any errors
+            }
         );
     } else {
         console.log("Geolocation not supported");
@@ -232,17 +215,16 @@ function addDonationContainersToMap(containers) {
 function toggleDropPinMode() {
     isDropPinMode = !isDropPinMode;
     const dropPinButton = document.getElementById('dropPin');
-    dropPinButton.textContent = isDropPinMode ? 'Cancel Drop Pin' : 'Drop Pin';
-    map.dragging.enable();
-    map.touchZoom.enable();
-    map.doubleClickZoom.enable();
-    map.scrollWheelZoom.enable();
-    map.boxZoom.enable();
-    map.keyboard.enable();
+    
+    // Highlight the button when drop pin mode is active
     if (isDropPinMode) {
-        map.getContainer().style.cursor = 'crosshair';
+        dropPinButton.classList.add('active');
+    
+        map.getContainer().style.cursor = 'crosshair'; // Change cursor
     } else {
-        map.getContainer().style.cursor = '';
+        dropPinButton.classList.remove('active');
+       
+        map.getContainer().style.cursor = ''; // Reset cursor
     }
 }
 
@@ -449,4 +431,21 @@ function closeNavbar() {
     navbar.classList.remove('expanded');
     displayContainerInfo(); // This will now also remove the highlight
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const getLocationButton = document.getElementById('getLocation');
+    const dropPinButton = document.getElementById('dropPin');
+
+    // Event listener for "Get My Location" button
+    getLocationButton.addEventListener('click', function() {
+        getUserLocation(); // Call the function to get user location
+    });
+
+    // Event listener for "Drop Pin" button
+    dropPinButton.addEventListener('click', function() {
+        toggleDropPinMode(); // Call the function to toggle drop pin mode
+    });
+
+    // Existing code...
+});
 

@@ -530,7 +530,7 @@ body {
 
 /* Adjust the app name to accommodate the new toggle button */
 .app-name {
-    margin-top: 50px; /* Increased top margin to make room for the button */
+    margin-top: 15px; /* Increased top margin to make room for the button */
 }
 
 /* When navbar is expanded */
@@ -616,4 +616,12 @@ body {
     top: 0;
     left: 0;
     z-index: 1;
+}
+
+/* Add this to your existing CSS */
+#map-controls button.active {
+    background-color: #4CAF50; /* Green background when active */
+    color: white; /* Change text color to white */
+    border: 2px solid #388E3C; /* Darker green border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
 }
