@@ -2,13 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Points Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ReDress - Donation Container Locator</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    <!-- Add these meta tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-brand">ReDress</div>
+        <ul class="navbar-menu">
+            <li><a href="#" class="active">Map</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
     <div id="map"></div>
+    <div id="sidebar">
+        <h2>Nearest Containers</h2>
+        <ul id="nearest-containers"></ul>
+    </div>
     <div id="button-container">
         <button id="getLocation">Get My Location</button>
         <button id="dropPin">Drop Pin</button>

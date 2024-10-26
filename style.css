@@ -1,29 +1,77 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: relative;
+    z-index: 1001; /* Ensure navbar is above the map */
+}
+
+.navbar-brand {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.navbar-menu {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-menu li {
+    margin-left: 20px;
+}
+
+.navbar-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+}
+
+.navbar-menu a.active, .navbar-menu a:hover {
+    background-color: #555;
+    border-radius: 4px;
 }
 
 #map {
-    height: 100vh;
+    height: calc(100vh - 60px);
     width: 100%;
 }
 
 #button-container {
     position: absolute;
-    top: 10px;
+    bottom: 20px;
     left: 10px;
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
 }
 
 #getLocation, #dropPin {
-    padding: 10px 15px;
+    padding: 12px 20px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -31,4 +79,160 @@ body {
 
 #getLocation:hover, #dropPin:hover {
     background-color: #f0f0f0;
+}
+
+.directions-btn {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.directions-btn:hover {
+    background-color: #45a049;
+}
+
+.directions-btn:active {
+    background-color: #3e8e41;
+}
+
+/* Style the popup to ensure the button fits well */
+.leaflet-popup-content {
+    min-width: 200px;
+}
+
+/* Media Queries for Responsiveness */
+@media screen and (max-width: 768px) {
+    .navbar-toggle {
+        display: block;
+    }
+
+    .navbar-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #333;
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .navbar-menu.show {
+        display: flex;
+    }
+
+    .navbar-menu li {
+        margin: 5px 0;
+    }
+
+    #map {
+        height: calc(100vh - 60px);
+    }
+
+    #button-container {
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .navbar-brand {
+        font-size: 1.2em;
+    }
+
+    #getLocation, #dropPin {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .directions-btn {
+        font-size: 12px;
+    }
+
+    .leaflet-popup-content {
+        min-width: 150px;
+    }
+}
+
+#sidebar {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 300px;
+    height: calc(100vh - 60px);
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+#nearest-containers {
+    list-style-type: none;
+    padding: 0;
+}
+
+#nearest-containers li {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+#nearest-containers .container-type {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#nearest-containers .container-distance {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Adjust map width to accommodate sidebar */
+#map {
+    width: calc(100% - 300px);
+}
+
+/* Media query for responsive design */
+@media screen and (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        height: 200px;
+        top: auto;
+        bottom: 0;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #map {
+        width: 100%;
+        height: calc(100vh - 260px);
+    }
+
+    #button-container {
+        bottom: 220px;
+    }
 }
