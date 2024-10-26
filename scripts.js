@@ -511,13 +511,17 @@ window.addEventListener('resize', updateLegend);
 function adjustLegendPosition() {
     const legend = document.getElementById('map-legend');
     const navbar = document.getElementById('vertical-navbar');
-    if (navbar.classList.contains('expanded') && window.innerWidth <= 768) {
-        legend.style.bottom = navbar.offsetHeight + 'px';
-    } else {
-        legend.style.bottom = '20px';
-    }
+
 }
 
 // Call adjustLegendPosition on window resize as well
 window.addEventListener('resize', adjustLegendPosition);
 
+// Add this to your existing JavaScript
+document.getElementById('zoomIn').addEventListener('click', function() {
+    map.zoomIn();
+});
+
+document.getElementById('zoomOut').addEventListener('click', function() {
+    map.zoomOut();
+});
