@@ -748,6 +748,7 @@ body {
     background-color: #333;
     color: white;
     border-radius: 8px;
+    padding: 12px;
 }
 
 .leaflet-popup-tip {
@@ -757,9 +758,10 @@ body {
 .popup-content h3 {
     margin-top: 0;
     margin-bottom: 10px;
+    font-size: 16px;
 }
 
-.popup-content button {
+.popup-content .directions-btn {
     display: block;
     width: 100%;
     padding: 8px 12px;
@@ -770,8 +772,49 @@ body {
     border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.popup-content button:hover {
+.popup-content .directions-btn:hover {
+    background-color: #555;
+}
+
+/* Add these styles to your existing CSS file */
+
+.popup-content .opening-hours {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #ccc;
+}
+
+/* Update the existing popup styles if needed */
+.leaflet-popup-content-wrapper {
+    background-color: #333;
+    color: white;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.popup-content h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.popup-content .directions-btn {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.popup-content .directions-btn:hover {
     background-color: #555;
 }

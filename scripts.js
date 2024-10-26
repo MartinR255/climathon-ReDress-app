@@ -191,10 +191,10 @@ function addDonationContainersToMap(containers) {
                 e.originalEvent.stopPropagation();
                 L.DomEvent.stopPropagation(e);
 
-                // Remove highlight from previously selected marker
-                if (selectedMarker) {
-                    selectedMarker.setIcon(selectedMarker.defaultIcon);
+                // Close popup of previously selected marker
+                if (selectedMarker && selectedMarker !== marker) {
                     selectedMarker.closePopup();
+                    selectedMarker.setIcon(selectedMarker.defaultIcon);
                 }
 
                 // Highlight the clicked marker
@@ -210,6 +210,7 @@ function addDonationContainersToMap(containers) {
 
                 // Create and open popup with container info
                 const popupContent = createPopupContent(container);
+                marker.unbindPopup(); // Unbind any existing popup
                 marker.bindPopup(popupContent, {
                     offset: [0, -30],
                     closeButton: false,
@@ -248,7 +249,7 @@ function createPopupContent(container) {
 
     if (isCenter) {
         popupContent += `
-            <button class="info-btn" onclick="showOpeningHours('${openingHours}')">Show Opening Hours</button>
+            <div class="opening-hours">Opening Hours: ${openingHours}</div>
         `;
     }
 
@@ -403,17 +404,6 @@ function displayNearestContainers() {
     });
 }
 
-function showOpeningHours(hours) {
-    if (hours && hours !== "Not available") {
-        alert(`Opening Hours: ${hours}`);
-    } else {
-        alert("Opening hours information is not available for this location.");
-    }
-}
-
-// Make sure this function is accessible globally
-window.showOpeningHours = showOpeningHours;
-
 function displayContainerInfo(container) {
     const header = document.querySelector('.selected-point-header');
     const infoPanel = document.getElementById('container-info');
@@ -464,7 +454,7 @@ function displayContainerInfo(container) {
 
     if (isCenter) {
         infoHTML += `
-            <button class="info-btn" onclick="showOpeningHours('${openingHours}')">Show Opening Hours</button>
+            <div class="opening-hours">Opening Hours: ${openingHours}</div>
         `;
     }
 
