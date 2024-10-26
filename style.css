@@ -1,41 +1,30 @@
-/* Import Geist Sans font */
-@import url('https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;700&display=swap');
+/* Import Open Sans font */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
 
-/* Set Geist Sans as the default font for the entire body */
+/* Set Open Sans as the default font for the entire body */
 body {
     margin: 0;
     padding: 0;
     display: flex;
-    font-family: 'Geist Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    overflow: hidden; /* Prevent scrolling */
 }
 
-/* Navbar styling */
-#vertical-navbar {
-    width: 40px;
-    height: 100vh;
-    background-color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    position: fixed;
-    left: 0;
-    top: 0;
-    overflow: hidden;
-    transition: width 0.3s ease;
-    z-index: 1000;
-    overflow-y: auto; /* Allow scrolling if content is too long */
-}
+
 
 /* App name styling */
 .app-name {
     color: white;
-    font-size: 18px;
+    font-size: 24px; /* Increased from 18px */
     font-weight: bold;
     white-space: nowrap;
-    margin-top: 20px;
+    margin: 25px 0; /* Increased margin */
     text-align: center;
-    transition: margin-left 0.6s ease; /* Slowed to 0.6s */
+    transition: margin-left 0.6s ease;
+    width: 100%; /* Ensure full width */
+    padding: 0 15px;
+    border-bottom: 1px solid #444; /* Add separator */
+    padding-bottom: 20px;
 }
 
 /* Initials styling, visible by default */
@@ -87,7 +76,7 @@ body {
 
 /* Update navbar styling - remove transition references to button */
 #vertical-navbar {
-    width: 40px;
+    width: 0;
     height: 100vh;
     background-color: #333;
     display: flex;
@@ -97,14 +86,23 @@ body {
     position: fixed;
     left: 0;
     top: 0;
-    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
     transition: width 0.3s ease;
     z-index: 1000;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* WebKit and Chromium-based browsers (Chrome, Edge, Opera, etc.) */
+#vertical-navbar::-webkit-scrollbar {
+    display: none;
 }
 
 /* Expanded navbar width */
 #vertical-navbar.expanded {
     width: 250px;
+    overflow-y: auto;
 }
 
 /* Toggle button arrow visibility */
@@ -118,43 +116,62 @@ body {
 
 /* Map and button container styling */
 #map {
-    height: 100vh; /* Changed from calc(100vh - 60px) to 100vh */
+    height: 100vh;
     width: 100%;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 1;
+    transition: margin-left 0.3s ease;
 }
 
-#button-container {
+/* Add these styles for the new map controls */
+#map-controls {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+
     z-index: 1001;
     display: flex;
+    flex-direction: row;  /* Changed from column to row */
     gap: 10px;
 }
 
-#button-container button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-#getLocation, #dropPin {
-    padding: 12px 20px;
+#map-controls button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #333;
+    transition: background-color 0.3s ease;
 }
 
-#getLocation:hover, #dropPin:hover {
+#map-controls button:hover {
     background-color: #f0f0f0;
+}
+
+/* Adjust for smaller screens */
+@media (max-width: 768px) {
+    #map-controls {
+        top: 10px;  /* Changed from bottom to top */
+        right: 10px;
+    }
+
+    #map-controls button {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+}
+
+/* Remove the old button-container styles */
+#button-container {
+    display: none;
 }
 
 /* Font weights for other elements */
@@ -175,35 +192,51 @@ body {
     color: white;
 }
 
+/* Updated styles for containers in navbar */
 #nearest-containers li {
     padding: 15px;
     border-bottom: 1px solid #444;
+    background: #444; /* Darker background */
+    margin: 10px 15px; /* Add margin around each container */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: transform 0.2s ease, background 0.2s ease; /* Smooth hover effect */
+}
+
+#nearest-containers li:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    background: #4a4a4a; /* Slightly lighter on hover */
 }
 
 #nearest-containers .container-type {
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-#nearest-containers .container-distance {
-    font-size: 12px;
-    color: #aaa;
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
     margin-bottom: 8px;
 }
 
+#nearest-containers .container-distance {
+    font-size: 13px;
+    color: #ccc;
+    margin-bottom: 12px;
+    font-weight: 300;
+}
+
 #nearest-containers .directions-btn {
-    background: #444;
+    background: #666;
     color: white;
     border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
+    padding: 8px 12px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
     width: 100%;
+    font-weight: 500;
+    transition: background 0.2s ease;
 }
 
 #nearest-containers .directions-btn:hover {
-    background: #555;
+    background: #777;
 }
 
 /* Add these styles for the toggle button */
@@ -255,4 +288,332 @@ body {
 
 #navbar-toggle i {
     transition: transform 0.3s ease;
+}
+
+#container-info {
+    padding: 15px;
+    color: white;
+    border-bottom: 1px solid #444;
+}
+
+#container-info h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#container-info button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#container-info button:hover {
+    background-color: #555;
+}
+
+/* Add styles for the selected point header */
+.selected-point-header {
+    color: white;
+    font-size: 18px;
+    padding: 15px;
+    margin: 0;
+    background-color: #444;
+    border-bottom: 1px solid #555;
+}
+
+.selected-point-subheader {
+    color: #aaa;
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+/* Responsive adjustments for smaller devices */
+@media (max-width: 768px) {
+    #vertical-navbar {
+        width: 0; /* Start with no width */
+        transition: width 0.3s ease, transform 0.3s ease;
+    }
+
+    #vertical-navbar.expanded {
+        width: 100%; /* Full width when expanded */
+        transform: translateX(0);
+    }
+
+    #map {
+        width: 100%; /* Full width by default */
+        margin-left: 0;
+        transition: width 0.3s ease, margin-left 0.3s ease;
+    }
+
+    #vertical-navbar.expanded + #map {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .app-name {
+        font-size: 20px;
+        margin: 15px 0;
+        padding-left: 40px; /* Make room for the toggle button */
+    }
+
+    #nearest-containers li {
+        padding: 12px;
+        margin: 8px 12px;
+    }
+
+    #nearest-containers .container-type {
+        font-size: 16px;
+    }
+
+    #nearest-containers .container-distance {
+        font-size: 14px;
+    }
+
+    #nearest-containers .directions-btn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    #new-navbar-toggle {
+        top: 10px;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+        background-color: rgba(51, 51, 51, 0.7);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #vertical-navbar.expanded #new-navbar-toggle {
+        left: auto;
+        right: 10px;
+    }
+
+    .selected-point-header {
+        font-size: 18px;
+        padding: 12px;
+    }
+
+    .selected-point-subheader {
+        font-size: 14px;
+    }
+
+    #container-info button {
+        padding: 10px 14px;
+        font-size: 16px;
+    }
+}
+
+/* Add these styles to ensure proper scrolling behavior */
+#vertical-navbar .expansion {
+    width: 100%;
+    min-height: min-content; /* Ensure content pushes the height */
+}
+
+/* Ensure the toggle button stays in place */
+#navbar-toggle,
+#collapse-navbar {
+    position: fixed;
+    left: 10px; /* Remove this line */
+}
+
+/* Updated styles for collapse-navbar */
+#collapse-navbar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    transition: transform 0.3s ease;
+    opacity: 0; /* Hidden by default */
+    pointer-events: none; /* Not clickable when hidden */
+}
+
+#vertical-navbar.expanded #collapse-navbar {
+    opacity: 1;
+    pointer-events: auto; /* Clickable when visible */
+}
+
+#collapse-navbar:hover {
+    transform: scale(1.1);
+}
+
+#collapse-navbar i {
+    transition: transform 0.3s ease;
+}
+
+/* Adjust the app name to accommodate the collapse button */
+.app-name {
+    padding-right: 40px; /* Add space for the collapse button */
+}
+
+/* You can remove or comment out these styles if they're not needed anymore */
+/*
+#vertical-navbar.expanded #collapse-navbar i {
+    transform: rotate(180deg);
+}
+*/
+
+/* Ensure the navbar toggle button (for expanding) stays in place */
+#navbar-toggle {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    /* ... rest of the styles ... */
+}
+
+/* New navbar toggle button styles */
+#new-navbar-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 1010;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#new-navbar-toggle i {
+    color: black; /* This makes the icon black */
+}
+
+#new-navbar-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* Adjust the toggle button for expanded navbar */
+#vertical-navbar.expanded #new-navbar-toggle {
+    left: 260px; /* Adjust based on your expanded navbar width */
+    background-color: transparent;
+}
+
+#vertical-navbar.expanded #new-navbar-toggle i {
+    color: white; /* Change icon color to white when navbar is expanded */
+}
+
+/* For smaller screens */
+@media (max-width: 768px) {
+    #vertical-navbar.expanded #new-navbar-toggle {
+        left: auto;
+        right: 10px;
+    }
+}
+
+/* Adjust the app name to accommodate the new toggle button */
+.app-name {
+    margin-top: 50px; /* Increased top margin to make room for the button */
+}
+
+/* When navbar is expanded */
+#vertical-navbar.expanded + #map {
+    width: 100%;
+    margin-left: 0;
+}
+
+/* Add this new rule */
+#container-info:empty {
+    display: none;
+}
+
+/* Ensure the toggle button stays on top */
+#new-navbar-toggle {
+    z-index: 1010;
+}
+
+/* Adjust map controls for better visibility */
+#map-controls {
+    top: 20px;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* Ensure the navbar content is scrollable */
+#vertical-navbar .expansion {
+    max-height: calc(100vh - 60px); /* Adjust based on your header height */
+    overflow-y: auto;
+}
+
+/* Initial state for larger screens */
+@media (min-width: 769px) {
+    #vertical-navbar.expanded {
+        width: 250px;
+    }
+
+    #vertical-navbar.expanded + #map {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    #vertical-navbar.expanded {
+        width: 100%;
+    }
+
+    #vertical-navbar.expanded + #map {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+/* Update navbar styling for mobile */
+@media (max-width: 768px) {
+    #vertical-navbar {
+        width: 100%;
+        height: 0;
+        bottom: 0;
+        top: auto;
+        transition: height 0.3s ease;
+    }
+
+    #vertical-navbar.expanded {
+        height: 60%;
+    }
+
+    #new-navbar-toggle {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        z-index: 1010;
+    }
+}
+
+/* Ensure map is full screen */
+#map {
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }

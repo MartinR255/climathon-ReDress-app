@@ -13,27 +13,35 @@
     <meta http-equiv="Expires" content="0">
 </head>
 <body>
-    <nav id="vertical-navbar">
+    <button id="new-navbar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <nav id="vertical-navbar" class="expanded">
         <div class="app-name">
             <span class="initials">R</span><span class="expansion e">e</span>
             <span class="initials">D</span><span class="expansion ress">ress</span>
         </div>
+
         <div class="expansion">
+            <!-- Add this new section -->
+            <h2 class="selected-point-header">
+                Selected Location
+                <div class="selected-point-subheader">Click a container on the map to see details</div>
+            </h2>
+            <div id="container-info"></div>
             <h3 style="color: white; padding: 15px 15px 0 15px; margin: 0;">Nearest Locations</h3>
             <ul id="nearest-containers"></ul>
         </div>
-        <!-- Add this button -->
-        <button id="navbar-toggle">
-            <i class="fas fa-chevron-left"></i>
-        </button>
     </nav>
     
-    
-    
     <div id="map"></div>
-    <div id="button-container">
-        <button id="getLocation">Get My Location</button>
-        <button id="dropPin">Drop Pin</button>
+    <div id="map-controls">
+        <button id="getLocation" title="Get My Location">
+            <i class="fas fa-location-arrow"></i>
+        </button>
+        <button id="dropPin" title="Drop Pin">
+            <i class="fas fa-map-pin"></i>
+        </button>
     </div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="scripts.js"></script>

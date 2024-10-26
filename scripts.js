@@ -3,6 +3,13 @@ let userMarker;
 let searchCircle;
 let isDropPinMode = false;
 let nearestContainers = [];
+let selectedMarker = null;
+
+// Make sure this function is called when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initMap();
+    // ... rest of your existing DOMContentLoaded code ...
+});
 
 function initMap() {
     // Start with Bratislava as the default center
@@ -10,6 +17,8 @@ function initMap() {
     map = L.map('map', {
         zoomControl: false  // Disable default zoom controls
     }).setView(bratislavaCoords, window.innerWidth < 768 ? 11 : 12);
+
+    // Add the tile layer (map imagery)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -22,6 +31,8 @@ function initMap() {
     map.on('click', onMapClick);
 
     getUserLocation();
+
+    displayContainerInfo(); // This will clear and hide the container info panel
 }
 
 function getUserLocation() {
@@ -186,38 +197,32 @@ function addDonationContainersToMap(containers) {
         const isClothes = container.tags["recycling:clothes"] === "yes";
         const isShoes = container.tags["recycling:shoes"] === "yes";
         const isCenter = container.tags["recycling_type"] === "centre";
-        const openingHours = container.tags["opening_hours"] || "Not available";
-        let popupContent = "";
-        let icon;
-
-        if (isCenter) {
-            popupContent = "Recycling Center";
-            icon = centerIcon;
-            // Add info icon for opening hours only for recycling centers
-            popupContent += `<br><button class="info-btn" onclick="showOpeningHours('${openingHours}')">ℹ️ Opening Hours</button>`;
-        } else {
-            if (isClothes && isShoes) {
-                popupContent = "Clothes and Shoes Donation Container";
-            } else if (isClothes) {
-                popupContent = "Clothes Donation Container";
-            } else if (isShoes) {
-                popupContent = "Shoes Donation Container";
-            }
-            icon = containerIcon;
-        }
-
-        // Add "Get Directions" button to popup content
-        popupContent += `<br><button class="directions-btn" onclick="getDirections(${container.lat}, ${container.lon})">Get Directions</button>`;
+        const icon = isCenter ? centerIcon : containerIcon;
 
         const markerLatLng = container.center ? [container.center.lat, container.center.lon] : [container.lat, container.lon];
-        L.marker(markerLatLng, {icon: icon})
+        const marker = L.marker(markerLatLng, {icon: icon})
             .addTo(map)
-            .bindPopup(popupContent)
             .on('click', function(e) {
-                // Prevent the map click event from firing when clicking markers
+                e.originalEvent.stopPropagation();
                 L.DomEvent.stopPropagation(e);
-                
-                // Expand navbar when marker is clicked
+
+                // Remove highlight from previously selected marker
+                if (selectedMarker) {
+                    selectedMarker.setIcon(selectedMarker.defaultIcon);
+                }
+
+                // Highlight the clicked marker
+                marker.defaultIcon = icon;
+                const highlightedIcon = L.icon({
+                    ...icon.options,
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png'
+                });
+                marker.setIcon(highlightedIcon);
+
+                // Set this as the new selected marker
+                selectedMarker = marker;
+
+                displayContainerInfo(container);
                 const navbar = document.getElementById('vertical-navbar');
                 navbar.classList.add('expanded');
             });
@@ -251,21 +256,44 @@ function onMapClick(e) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.getElementById('vertical-navbar');
-    const navbarToggle = document.getElementById('navbar-toggle');
+    const newNavbarToggle = document.getElementById('new-navbar-toggle');
     
-    // Add this line to automatically expand the navbar on load
-    navbar.classList.add('expanded');
-    
-    // Add click handler for toggle button
-    navbarToggle.addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevent click from reaching the map
+    // Remove old event listeners if they exist
+    // const navbarToggle = document.getElementById('navbar-toggle');
+    // if (navbarToggle) {
+    //     navbarToggle.removeEventListener('click', toggleNavbar);
+    // }
+
+    // New toggle button click handler
+    newNavbarToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
         navbar.classList.toggle('expanded');
+        updateToggleIcon();
     });
-    
-    initMap();
-    
-    document.getElementById('getLocation').addEventListener('click', getUserLocation);
-    document.getElementById('dropPin').addEventListener('click', toggleDropPinMode);
+
+    // Function to update the toggle icon
+    function updateToggleIcon() {
+        const icon = newNavbarToggle.querySelector('i');
+        if (navbar.classList.contains('expanded')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    }
+
+    // Close navbar when clicking outside
+    document.addEventListener('click', function(e) {
+        // Check if the click was on a marker or within the navbar
+        const isMarkerClick = e.target.classList.contains('leaflet-marker-icon');
+        if (!navbar.contains(e.target) && !isMarkerClick && navbar.classList.contains('expanded')) {
+            navbar.classList.remove('expanded');
+            updateToggleIcon();
+        }
+    });
+
+    // ... rest of your existing code ...
 });
 
 // Add this new function to handle getting directions
@@ -357,4 +385,68 @@ function showOpeningHours(hours) {
 
 // Make sure this function is accessible globally
 window.showOpeningHours = showOpeningHours;
+
+function displayContainerInfo(container) {
+    const header = document.querySelector('.selected-point-header');
+    const infoPanel = document.getElementById('container-info');
+
+    if (!container) {
+        // No container selected, clear the info and hide the panel
+        header.innerHTML = `
+            Selected Location
+            <div class="selected-point-subheader">Click a container on the map to see details</div>
+        `;
+        infoPanel.innerHTML = '';
+
+        // Remove highlight from previously selected marker
+        if (selectedMarker) {
+            selectedMarker.setIcon(selectedMarker.defaultIcon);
+            selectedMarker = null;
+        }
+
+        return;
+    }
+
+    // Rest of the existing function for when a container is selected
+    const isClothes = container.tags["recycling:clothes"] === "yes";
+    const isShoes = container.tags["recycling:shoes"] === "yes";
+    const isCenter = container.tags["recycling_type"] === "centre";
+    
+    let containerType = "";
+    if (isCenter) {
+        containerType = "Recycling Center";
+    } else if (isClothes && isShoes) {
+        containerType = "Clothes and Shoes Donation";
+    } else if (isClothes) {
+        containerType = "Clothes Donation";
+    } else if (isShoes) {
+        containerType = "Shoes Donation";
+    }
+
+    header.innerHTML = `
+        ${containerType}
+        <div class="selected-point-subheader">Container Details</div>
+    `;
+
+    const openingHours = container.tags["opening_hours"] || "Not available";
+
+    let infoHTML = `
+        <button class="directions-btn" onclick="getDirections(${container.lat}, ${container.lon})">Get Directions</button>
+    `;
+
+    if (isCenter) {
+        infoHTML += `
+            <button class="info-btn" onclick="showOpeningHours('${openingHours}')">Show Opening Hours</button>
+        `;
+    }
+
+    infoPanel.innerHTML = infoHTML;
+}
+
+// You might also want to call this when closing the expanded navbar
+function closeNavbar() {
+    const navbar = document.getElementById('vertical-navbar');
+    navbar.classList.remove('expanded');
+    displayContainerInfo(); // This will now also remove the highlight
+}
 
