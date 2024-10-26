@@ -15,16 +15,15 @@ body {
 /* App name styling */
 .app-name {
     color: white;
-    font-size: 24px; /* Increased from 18px */
+    font-size: 24px;
     font-weight: bold;
     white-space: nowrap;
-    margin: 25px 0; /* Increased margin */
+    width: 100%;
+    padding: 15px 40px 20px 15px;
+    margin: 15px 0 25px;
     text-align: center;
+    border-bottom: 1px solid #444;
     transition: margin-left 0.6s ease;
-    width: 100%; /* Ensure full width */
-    padding: 0 15px;
-    border-bottom: 1px solid #444; /* Add separator */
-    padding-bottom: 20px;
 }
 
 /* Initials styling, visible by default */
@@ -468,17 +467,6 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* Adjust the app name to accommodate the collapse button */
-.app-name {
-    padding-right: 40px; /* Add space for the collapse button */
-}
-
-/* You can remove or comment out these styles if they're not needed anymore */
-/*
-#vertical-navbar.expanded #collapse-navbar i {
-    transform: rotate(180deg);
-}
-*/
 
 /* Ensure the navbar toggle button (for expanding) stays in place */
 #navbar-toggle {
@@ -535,10 +523,6 @@ body {
     }
 }
 
-/* Adjust the app name to accommodate the new toggle button */
-.app-name {
-    margin-top: 15px; /* Increased top margin to make room for the button */
-}
 
 /* When navbar is expanded */
 #vertical-navbar.expanded + #map {
@@ -831,4 +815,65 @@ body {
     opacity: 0;
     pointer-events: none;
 }
+
+
+/* Container styling for the row layout */
+.legend-container {
+    position: fixed; /* Change to fixed positioning */
+    top: 1%; /* Position from bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center adjust */
+    display: flex;
+    gap: 0.1em;
+    z-index: 1000; /* Ensure it's above the map */
+    background-color: whitesmoke;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Styling for each item */
+.legend-item {
+    padding: 4px 8px; /* Adjust padding for compact fit */
+    color: #333;
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping */
+    position: relative; /* Position relative for ::before pseudo-element */
+    display: inline-flex; /* Align content horizontally */
+    align-items: center; /* Center-align dot and text vertically */
+    border-radius: 4px; /* Optional: adds a slight rounding */
+}
+
+/* Color dot styling for each item */
+.legend-item::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: white; /* Default color for the dot */
+    margin-right: 6px; /* Small space between dot and text */
+}
+
+/* Specific colors for each item's dot */
+.legend-item:nth-child(1)::before { background-color: #00ff00; } /* Green for Container */
+.legend-item:nth-child(2)::before { background-color: #ff0000; } /* Red for Recycling Center */
+.legend-item:nth-child(3)::before { background-color: #0000ff; } /* Blue for You */
+
+
+/* Add media query for mobile devices */
+@media (max-width: 768px) {
+    .legend-container {
+        top: 1% ;
+        padding: 6px;
+    }
+    
+    .legend-item {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+}
+
 
