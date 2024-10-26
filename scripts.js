@@ -6,9 +6,17 @@ let isDropPinMode = false;
 function initMap() {
     // Start with Bratislava as the default center
     const bratislavaCoords = [48.1486, 17.1077];
-    map = L.map('map').setView(bratislavaCoords, 12);
+    map = L.map('map', {
+        zoomControl: false  // Disable default zoom control
+    }).setView(bratislavaCoords, 12);
+    
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add zoom control to the bottom right corner
+    L.control.zoom({
+        position: 'bottomright'
     }).addTo(map);
 
     map.on('click', onMapClick);
@@ -135,7 +143,15 @@ function addDonationContainersToMap(containers) {
 
         L.marker([container.lat, container.lon], {icon: icon})
             .addTo(map)
-            .bindPopup(popupContent);
+            .bindPopup(popupContent)
+            .on('click', function(e) {
+                // Prevent the map click event from firing when clicking markers
+                L.DomEvent.stopPropagation(e);
+                
+                // Expand navbar when marker is clicked
+                const navbar = document.getElementById('vertical-navbar');
+                navbar.classList.add('expanded');
+            });
     });
 }
 
@@ -160,14 +176,19 @@ function onMapClick(e) {
     if (isDropPinMode) {
         updateMapView(e.latlng.lat, e.latlng.lng);
         toggleDropPinMode();
+    } else {
+        // Collapse navbar when clicking on map (not on markers)
+        const navbar = document.getElementById('vertical-navbar');
+        navbar.classList.remove('expanded');
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.getElementById('vertical-navbar');
+    
     initMap();
     
     document.getElementById('getLocation').addEventListener('click', getUserLocation);
-    
     document.getElementById('dropPin').addEventListener('click', toggleDropPinMode);
 });
 
