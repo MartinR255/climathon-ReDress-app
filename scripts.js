@@ -33,6 +33,8 @@ function initMap() {
     getUserLocation();
 
     displayContainerInfo(); // This will clear and hide the container info panel
+
+    updateLegend();
 }
 
 function getUserLocation() {
@@ -192,6 +194,7 @@ function addDonationContainersToMap(containers) {
                 // Remove highlight from previously selected marker
                 if (selectedMarker) {
                     selectedMarker.setIcon(selectedMarker.defaultIcon);
+                    selectedMarker.closePopup();
                 }
 
                 // Highlight the clicked marker
@@ -205,11 +208,53 @@ function addDonationContainersToMap(containers) {
                 // Set this as the new selected marker
                 selectedMarker = marker;
 
-                displayContainerInfo(container);
-                const navbar = document.getElementById('vertical-navbar');
-                navbar.classList.add('expanded');
+                // Create and open popup with container info
+                const popupContent = createPopupContent(container);
+                marker.bindPopup(popupContent, {
+                    offset: [0, -30],
+                    closeButton: false,
+                    maxWidth: 300
+                }).openPopup();
+
+                // Update nearest containers in navbar
+                updateNearestContainers(userMarker.getLatLng().lat, userMarker.getLatLng().lng, containers);
             });
     });
+}
+
+function createPopupContent(container) {
+    const isClothes = container.tags["recycling:clothes"] === "yes";
+    const isShoes = container.tags["recycling:shoes"] === "yes";
+    const isCenter = container.tags["recycling_type"] === "centre";
+    
+    let containerType = "";
+    if (isCenter) {
+        containerType = "Recycling Center";
+    } else if (isClothes && isShoes) {
+        containerType = "Clothes and Shoes Donation";
+    } else if (isClothes) {
+        containerType = "Clothes Donation";
+    } else if (isShoes) {
+        containerType = "Shoes Donation";
+    }
+
+    const openingHours = container.tags["opening_hours"] || "Not available";
+
+    let popupContent = `
+        <div class="popup-content">
+            <h3>${containerType}</h3>
+            <button class="directions-btn" onclick="getDirections(${container.lat}, ${container.lon})">Get Directions</button>
+    `;
+
+    if (isCenter) {
+        popupContent += `
+            <button class="info-btn" onclick="showOpeningHours('${openingHours}')">Show Opening Hours</button>
+        `;
+    }
+
+    popupContent += `</div>`;
+
+    return popupContent;
 }
 
 function toggleDropPinMode() {
@@ -251,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopPropagation();
         navbar.classList.toggle('expanded');
         updateToggleIcon();
+        adjustLegendPosition();
     });
 
     // Function to update the toggle icon
@@ -448,4 +494,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Existing code...
 });
+
+// Add this function to your scripts.js file
+function updateLegend() {
+    const legendContent = document.getElementById('legend-content');
+    legendContent.innerHTML = `
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #00ff00;"></div>
+            <span>Clothes/Shoes Container</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ff0000;"></div>
+            <span>Recycling Center</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #0000ff;"></div>
+            <span>Your Location</span>
+        </div>
+    `;
+}
+
+// You might also want to update the legend when the window is resized
+window.addEventListener('resize', updateLegend);
+
+// Add this new function
+function adjustLegendPosition() {
+    const legend = document.getElementById('map-legend');
+    const navbar = document.getElementById('vertical-navbar');
+    if (navbar.classList.contains('expanded') && window.innerWidth <= 768) {
+        legend.style.bottom = navbar.offsetHeight + 'px';
+    } else {
+        legend.style.bottom = '20px';
+    }
+}
+
+// Call adjustLegendPosition on window resize as well
+window.addEventListener('resize', adjustLegendPosition);
 

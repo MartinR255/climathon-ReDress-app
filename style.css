@@ -625,3 +625,153 @@ body {
     border: 2px solid #388E3C; /* Darker green border */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
 }
+
+/* Mobile styles for the navbar */
+@media (max-width: 768px) {
+    #vertical-navbar {
+        background-color: #333; /* Dark background */
+        border-radius: 15px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+        padding: 15px; /* Add padding for spacing */
+        transition: height 0.3s ease; /* Smooth transition */
+    }
+
+    /* App name styling */
+    .app-name {
+        color: white;
+        font-size: 24px; /* Increased from 18px */
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 15px; /* Space below the app name */
+    }
+
+    /* Selected point header */
+    .selected-point-header {
+        color: white;
+        font-size: 18px;
+        padding: 10px;
+        margin: 0;
+        background-color: #444; /* Darker background for header */
+        border-radius: 10px; /* Rounded corners */
+    }
+
+    /* Nearest locations list */
+    #nearest-containers {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+        color: white;
+    }
+
+    /* Container items */
+    #nearest-containers li {
+        padding: 15px;
+        border-bottom: 1px solid #444;
+        background: #444; /* Darker background */
+        margin: 10px 0; /* Space between items */
+        border-radius: 8px; /* Rounded corners */
+        transition: background 0.2s ease; /* Smooth hover effect */
+    }
+
+    #nearest-containers li:hover {
+        background: #555; /* Slightly lighter on hover */
+    }
+
+    /* Button styles */
+    .directions-btn {
+        background: #666;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer;
+        font-size: 14px;
+        width: 100%;
+        transition: background 0.2s ease;
+    }
+
+    .directions-btn:hover {
+        background: #777; /* Lighter on hover */
+    }
+}
+
+/* Update the map-legend styles */
+.map-legend {
+    position: absolute;
+    top: 0.5em;
+    right: 50%;
+    transform: translateX(50%); /* Center the legend horizontally */
+    z-index: 1000;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    font-size: 12px; /* Reduced font size for better fit */
+    line-height: 1.2;
+    display: grid;
+    grid-auto-flow: column; /* Arrange items in a row */
+    grid-gap: 10px; /* Add space between items */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+
+.legend-color {
+    width: 12px; /* Reduced size */
+    height: 12px; /* Reduced size */
+    margin-right: 4px;
+    border-radius: 50%;
+    flex-shrink: 0; /* Prevent the color dot from shrinking */
+}
+
+/* Adjust for smaller screens */
+@media (max-width: 768px) {
+    .map-legend {
+        font-size: 10px;
+        padding: 5px;
+        grid-gap: 5px;
+    }
+    
+    .legend-color {
+        width: 10px;
+        height: 10px;
+        margin-right: 2px;
+    }
+}
+
+/* Add these styles to your existing CSS file */
+
+.leaflet-popup-content-wrapper {
+    background-color: #333;
+    color: white;
+    border-radius: 8px;
+}
+
+.leaflet-popup-tip {
+    background-color: #333;
+}
+
+.popup-content h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.popup-content button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: #555;
+}
